@@ -13,7 +13,8 @@ import OptionsMenu, { FormFields } from "./components/OptionsMenu";
 import SortVisualizer from "./components/SortVisualizer";
 import Loader from "./components/Loader";
 
-import SortingWorker from "./workers/SortingWorker.js?worker";
+import SortingWorker from "./workers/SortingWorker.ts?worker";
+import { SortMessageType } from "./workers/SortingWorker";
 
 export default function App(): JSX.Element {
   const [steps, setSteps] = useState<History>(() => [
@@ -42,12 +43,10 @@ export default function App(): JSX.Element {
     // CALCULATE STEPS WITH WORKER
     const worker = new SortingWorker();
     worker.onmessage = (message: MessageEvent<History>) => {
-      let sortHistory = message.data;
-      console.log(sortHistory);
-      setSteps(sortHistory);
+      setSteps(message.data);
       setLoading(false);
     };
-    worker.postMessage({ num, alg });
+    worker.postMessage({ num, alg } as SortMessageType);
   }, []);
 
   return (

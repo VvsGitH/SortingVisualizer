@@ -2,7 +2,8 @@ export enum ALG_ENUM {
   BUBBLE,
   SELECTION,
   INSERTION,
-  QUICK
+  QUICK,
+  MERGE
 };
 
 export const MIN_HEIGHT = 20;

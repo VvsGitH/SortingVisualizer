@@ -49,6 +49,7 @@ function OptionsMenu({ onSubmit, started, toggleStart }: OptionsMenuProps): JSX.
           <option value={ALG_ENUM.SELECTION}>Selection Sort</option>
           <option value={ALG_ENUM.INSERTION}>Insertion Sort</option>
           <option value={ALG_ENUM.QUICK}>Quick Sort</option>
+          <option value={ALG_ENUM.MERGE}>Merge Sort</option>
         </select>
       </div>
       <div className="input-field">

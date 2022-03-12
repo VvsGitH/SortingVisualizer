@@ -36,6 +36,8 @@ export function getAlg(algName: ALG_ENUM): Sort.SortFunction {
       return Sort.insertionSort;
     case ALG_ENUM.QUICK:
       return Sort.quicksort;
+    case ALG_ENUM.MERGE:
+      return Sort.mergeSort;
     default:
       console.error("Invalid sorting alogorithm");
       return () => [];

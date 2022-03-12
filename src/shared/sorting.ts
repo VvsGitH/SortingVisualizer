@@ -1,9 +1,3 @@
-function swap(i1: number, i2: number, arr: number[]) {
-  let temp = arr[i2];
-  arr[i2] = arr[i1];
-  arr[i1] = temp;
-}
-
 export type History = {
   type: "INIT" | "COMP" | "SWAP";
   i1?: number;
@@ -12,6 +6,15 @@ export type History = {
 }[];
 
 export type SortFunction = (arr: number[]) => History;
+
+
+
+function swap(i1: number, i2: number, arr: number[]) {
+  let temp = arr[i2];
+  arr[i2] = arr[i1];
+  arr[i1] = temp;
+}
+
 
 export function bubbleSort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
@@ -30,6 +33,8 @@ export function bubbleSort(arr: number[]): History {
   return history;
 }
 
+
+
 export function selectionSort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
   for (let i = 0; i < arr.length - 1; i++) {
@@ -45,6 +50,8 @@ export function selectionSort(arr: number[]): History {
   }
   return history;
 }
+
+
 
 export function insertionSort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
@@ -62,39 +69,91 @@ export function insertionSort(arr: number[]): History {
   return history;
 }
 
-function _quicksort(arr: number[], lo: number, hi: number, history: History) {
-  if (lo < 0 || lo >= hi) return;
 
-  // PARTITIONING
-  let pi: number;
-  while (true) {
-    const piValue = arr[Math.floor((lo + hi) * 0.5)];
-    let i = lo;
-    let j = hi;
-    while (arr[i] < piValue) {
-      i++;
-      history.push({ type: "COMP", i1: i, i2: j, arr: [...arr] });
-    }
-    while (arr[j] > piValue) {
-      j--;
-      history.push({ type: "COMP", i1: i, i2: j, arr: [...arr] });
-    }
-    if (i < j) {
-      swap(i, j, arr);
-      history.push({ type: "SWAP", i1: i, i2: j, arr: [...arr] });
-    } else {
-      pi = j;
-      break;
-    }
-  }
-
-  // RECURSION
-  _quicksort(arr, lo, pi - 1, history);
-  _quicksort(arr, pi + 1, hi, history);
-}
 
 export function quicksort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
-  _quicksort(arr, 0, arr.length - 1, history);
+
+  function sort(a: number[], lo: number, hi: number, history: History) {
+    if (lo < 0 || lo >= hi) return;
+
+    // PARTITIONING
+    let pi: number;
+    while (true) {
+      const piValue = a[Math.floor((lo + hi) * 0.5)];
+      let i = lo;
+      let j = hi;
+      while (a[i] < piValue) {
+        i++;
+        history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+      }
+      while (a[j] > piValue) {
+        j--;
+        history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+      }
+      if (i < j) {
+        swap(i, j, a);
+        history.push({ type: "SWAP", i1: i, i2: j, arr: [...a] });
+      } else {
+        pi = j;
+        break;
+      }
+    }
+
+    // RECURSION
+    sort(a, lo, pi - 1, history);
+    sort(a, pi + 1, hi, history);
+  }
+
+  sort(arr, 0, arr.length - 1, history);
+  return history;
+}
+
+
+
+export function mergeSort(arr: number[]): History {
+  const history: History = [{ type: "INIT", arr: [...arr] }];
+
+  // Merge alg without copy array
+  function merge(a: number[], left: number, center: number, right: number): void {
+    // The array is fractioned like this: 0 ... | i ... m | j ... right | ... end
+    // The sectors i...m and j...right are already ordered by recursion, so I just have to merge them
+    let i = left, m = center, j = center + 1;
+    
+    // ... | 1 4 5 7 | 9 10 11 23 | ... --> this array section is already ordered!
+    if (a[m] < a[j]) {
+      history.push({ type: "COMP", i1: m, i2: j, arr: [...a] });
+      return;
+    }
+
+    // ... | 1 4 9 15 | 3 10 11 23 | ... --> ... | 1 3 4 9 10 11 15 23 | ...
+    while (i <= m && j <= right) {
+      history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+      // ... | 1 4 i=10 m=23 | j=5 7 11 25 | ... --> ... | 1 4 5 i=10 m=23 | j=7 11 25 | ...
+      if (a[i] > a[j]) {
+        let temp = a[j];
+        for (let w = j; w > i; w--) {
+          a[w] = a[w-1];
+          history.push({ type: "SWAP", i1: w, i2: w-1, arr: [...a] });
+        }
+        a[i] = temp;
+        history.push({ type: "SWAP", i1: i, i2: undefined, arr: [...a] });
+        j++; m++;
+      }
+      i++;
+    }
+  }
+
+  // Recursive sort function
+  function sort(a: number[], left: number, right: number): void {
+    if (left < right) {
+      let center = Math.floor((left + right) / 2);
+      sort(a, left, center);
+      sort(a, center + 1, right);
+      merge(a, left, center, right);
+    }
+  }
+
+  sort(arr, 0, arr.length - 1);
   return history;
 }

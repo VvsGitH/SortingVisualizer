@@ -1,5 +1,5 @@
-import { useState, memo, FormEvent } from "react";
-import { INIT_NUM, INIT_ALG, INIT_SPEED, ALG_ENUM } from "../shared/constants";
+import { useState, FormEvent } from "react";
+import { INIT_NUM, INIT_ALG, INIT_SPEED, ALG_MAP, ALG_ENUM } from "../shared/constants";
 
 export interface FormFields {
   num: number;
@@ -24,7 +24,7 @@ function OptionsMenu({ onSubmit, started, toggleStart }: OptionsMenuProps): JSX.
     event.preventDefault();
     onSubmit({ num, alg, speed, animation });
   };
-
+  
   return (
     <form className="options-container" onSubmit={handleSubmit}>
       <div className="input-field">
@@ -43,13 +43,11 @@ function OptionsMenu({ onSubmit, started, toggleStart }: OptionsMenuProps): JSX.
         <select
           id="alg-selector"
           value={alg}
-          onChange={(e) => setAlg(e.target.value as unknown as ALG_ENUM)}
+          onChange={(e) => setAlg(e.target.value as ALG_ENUM)}
         >
-          <option value={ALG_ENUM.BUBBLE}>Bubble Sort</option>
-          <option value={ALG_ENUM.SELECTION}>Selection Sort</option>
-          <option value={ALG_ENUM.INSERTION}>Insertion Sort</option>
-          <option value={ALG_ENUM.QUICK}>Quick Sort</option>
-          <option value={ALG_ENUM.MERGE}>Merge Sort</option>
+          {(Object.keys(ALG_MAP) as Array<ALG_ENUM>).map(alg => (
+            <option key={alg} value={alg}>{ALG_MAP[alg].name}</option>
+          ))}
         </select>
       </div>
       <div className="input-field">

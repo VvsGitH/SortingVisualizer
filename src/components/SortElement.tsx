@@ -4,14 +4,23 @@ import { useSpring, animated } from "@react-spring/web";
 export interface SortElementProps {
   height: number,
   isMain: boolean,
-  isSecondary: boolean
+  isSecondary: boolean,
+  isTertiary: boolean
 }
 
 
-function SimpleSortElement({ height, isMain, isSecondary }: SortElementProps): JSX.Element {
+function setClass(isMain: boolean, isSecondary: boolean, isTertiary: boolean): string {
+  if (isMain) return "main";
+  if (isSecondary) return "secondary";
+  if (isTertiary) return "tertiary";
+  return "";
+}
+
+
+function SimpleSortElement({ height, isMain, isSecondary, isTertiary }: SortElementProps): JSX.Element {
   return (
     <div
-      className={"bar " + (isMain ? "main" : "") + (isSecondary ? "secondary" : "")}
+      className={"bar " + setClass(isMain, isSecondary, isTertiary)}
       style={{ height: height }}
     ></div>
   );
@@ -20,7 +29,7 @@ function SimpleSortElement({ height, isMain, isSecondary }: SortElementProps): J
 const memoizedSimpleSortElement = memo(SimpleSortElement);
 
 
-function AnimatedSortElement({ height, isMain, isSecondary }: SortElementProps): JSX.Element {
+function AnimatedSortElement({ height, isMain, isSecondary, isTertiary }: SortElementProps): JSX.Element {
   const currentHeight = useRef(height);
 
   useEffect(() => {
@@ -34,7 +43,7 @@ function AnimatedSortElement({ height, isMain, isSecondary }: SortElementProps):
 
   return (
     <animated.div
-      className={"bar " + (isMain ? "main" : "") + (isSecondary ? "secondary" : "")}
+      className={"bar " + setClass(isMain, isSecondary, isTertiary)}
       style={animation}
     ></animated.div>
   );

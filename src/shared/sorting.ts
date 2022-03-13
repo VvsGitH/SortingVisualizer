@@ -2,7 +2,8 @@ export type History = {
   type: "INIT" | "COMP" | "SWAP";
   i1?: number;
   i2?: number;
-  arr: number[];
+  i3?: number;
+  arr?: number[];
 }[];
 
 export type SortFunction = (arr: number[]) => History;
@@ -21,7 +22,7 @@ export function bubbleSort(arr: number[]): History {
   for (let i = 0; i < arr.length - 1; i++) {
     let swapped = false;
     for (let j = 0; j < arr.length - i - 1; j++) {
-      history.push({ type: "COMP", i1: j + 1, i2: j, arr: [...arr] });
+      history.push({ type: "COMP", i1: j + 1, i2: j });
       if (arr[j + 1] < arr[j]) {
         swapped = true;
         swap(j + 1, j, arr);
@@ -40,7 +41,7 @@ export function selectionSort(arr: number[]): History {
   for (let i = 0; i < arr.length - 1; i++) {
     let minIndex = i;
     for (let j = i + 1; j < arr.length; j++) {
-      history.push({ type: "COMP", i1: j, i2: minIndex, arr: [...arr] });
+      history.push({ type: "COMP", i1: j, i2: minIndex });
       if (arr[j] < arr[minIndex]) minIndex = j;
     }
     if (i !== minIndex) {
@@ -81,15 +82,15 @@ export function quicksort(arr: number[]): History {
       let i = lo, j = hi;
       while (a[i] < piValue) {
         i++;
-        history.push({ type: "COMP", i1: i, i2: pi, arr: [...a] });
+        history.push({ type: "COMP", i1: i, i2: pi, i3: j });
       }
       while (a[j] > piValue) {
         j--;
-        history.push({ type: "COMP", i1: j, i2: pi, arr: [...a] });
+        history.push({ type: "COMP", i1: i, i2: pi, i3: j });
       }
       if (i < j) {
         swap(i, j, a);
-        history.push({ type: "SWAP", i1: i, i2: j, arr: [...a] });
+        history.push({ type: "SWAP", i1: i, i2: pi, i3: j, arr: [...a] });
       } else {
         pi = j;
         break;
@@ -126,13 +127,13 @@ export function mergeSort(arr: number[]): History {
     
     // ... | 1 4 5 7 | 9 10 11 23 | ... --> this array section is already ordered!
     if (a[m] < a[j]) {
-      history.push({ type: "COMP", i1: m, i2: j, arr: [...a] });
+      history.push({ type: "COMP", i1: m, i2: j });
       return;
     }
 
     // ... | 1 4 9 15 | 3 10 11 23 | ... --> ... | 1 3 4 9 10 11 15 23 | ...
     while (i <= m && j <= right) {
-      history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+      history.push({ type: "COMP", i1: i, i2: j });
       // ... | 1 4 i=10 m=23 | j=5 7 11 25 | ... --> ... | 1 4 5 i=10 m=23 | j=7 11 25 | ...
       if (a[i] > a[j]) {
         let temp = a[j];

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo, useRef } from "react";
 import { History } from "../shared/sorting";
 import { AnimatedSortElement, SimpleSortElement } from "./SortElement";
 
@@ -12,6 +12,8 @@ export interface SortVisualizerProps {
 
 function SortVisualizer({ steps, speed, stepAnimation, started, toggleStart }: SortVisualizerProps): JSX.Element {
   const [currentStep, setCurrentStep] = useState(0);
+
+  const prevStep = useRef<number[]>([]);
 
   useEffect(() => {
     setCurrentStep(0);
@@ -50,16 +52,20 @@ function SortVisualizer({ steps, speed, stepAnimation, started, toggleStart }: S
 
   if (!steps) return <div id="NO_STEPS"></div>;
 
+  const stepArray = steps[currentStep]?.arr || prevStep.current;
+  prevStep.current = stepArray;
+
   return (
     <div className="bar-container">
       <div className="step-counter">{currentStep}</div>
 
-      {steps[currentStep]?.arr.map((height, idx) => (
+      {stepArray.map((height, idx) => (
         <SortElement
           key={idx}
           height={height}
           isMain={steps[currentStep].i1 === idx}
           isSecondary={steps[currentStep].i2 === idx}
+          isTertiary={steps[currentStep].i3 === idx}
         />
       ))}
     </div>

@@ -1,8 +1,9 @@
 :root {
   --primary-color: hsl(180, 100%, 25%);
   --primary-color-light: hsl(180, 40%, 70%);
-  --main-step: hsl(0, 100%, 27%);
-  --secondary-step: hsl(33, 100%, 50%);
+  --elm-1: hsl(0, 100%, 27%);
+  --elm-2: hsl(33, 100%, 50%);
+  --elm-3: hsl(276, 60%, 45%);
 }
 
 * {
@@ -75,11 +76,15 @@ code {
 }
 
 .bar.main {
-  background-color: var(--main-step);
+  background-color: var(--elm-1);
 }
 
 .bar.secondary {
-  background-color: var(--secondary-step);
+  background-color: var(--elm-2);
+}
+
+.bar.tertiary {
+  background-color: var(--elm-3);
 }
 
 .spinner-container {

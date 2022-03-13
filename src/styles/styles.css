@@ -72,6 +72,8 @@ code {
   border: 2px solid black;
   width: 20px;
 
+  position: relative;
+
   /* transition: background-color 0.2s ease-in; */
 }
 
@@ -85,6 +87,26 @@ code {
 
 .bar.tertiary {
   background-color: var(--elm-3);
+}
+
+.bar.section-start::before {
+  content: '';
+  height: 420px;
+  width: 2px;
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  left: -2px;
+}
+
+.bar.section-end::after {
+  content: '';
+  height: 420px;
+  width: 2px;
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  right: -2px;
 }
 
 .spinner-container {

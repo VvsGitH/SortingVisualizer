@@ -5,23 +5,32 @@ export interface SortElementProps {
   height: number,
   isMain: boolean,
   isSecondary: boolean,
-  isTertiary: boolean
+  isTertiary: boolean,
+  isSectionStart: boolean,
+  isSectionEnd: boolean
 }
 
 
-function setClass(isMain: boolean, isSecondary: boolean, isTertiary: boolean): string {
-  if (isMain) return "main";
-  if (isSecondary) return "secondary";
-  if (isTertiary) return "tertiary";
+function setElmHigh({ isMain, isSecondary, isTertiary }: SortElementProps): string {
+  if (isMain) return " main";
+  if (isSecondary) return " secondary";
+  if (isTertiary) return " tertiary";
   return "";
 }
 
 
-function SimpleSortElement({ height, isMain, isSecondary, isTertiary }: SortElementProps): JSX.Element {
+function setSectionHigh({ isSectionStart, isSectionEnd }: SortElementProps): string {
+  if (isSectionStart) return " section-start";
+  if (isSectionEnd) return " section-end";
+  return "";
+}
+
+
+function SimpleSortElement(props: SortElementProps): JSX.Element {
   return (
     <div
-      className={"bar " + setClass(isMain, isSecondary, isTertiary)}
-      style={{ height: height }}
+      className={"bar" + setElmHigh(props) + setSectionHigh(props)}
+      style={{ height: props.height }}
     ></div>
   );
 }
@@ -29,21 +38,21 @@ function SimpleSortElement({ height, isMain, isSecondary, isTertiary }: SortElem
 const memoizedSimpleSortElement = memo(SimpleSortElement);
 
 
-function AnimatedSortElement({ height, isMain, isSecondary, isTertiary }: SortElementProps): JSX.Element {
-  const currentHeight = useRef(height);
+function AnimatedSortElement(props: SortElementProps): JSX.Element {
+  const currentHeight = useRef(props.height);
 
   useEffect(() => {
-    currentHeight.current = height;
-  }, [height]);
+    currentHeight.current = props.height;
+  }, [props.height]);
 
   const animation = useSpring({
     from: { height: currentHeight.current },
-    to: { height: height },
+    to: { height: props.height },
   });
 
   return (
     <animated.div
-      className={"bar " + setClass(isMain, isSecondary, isTertiary)}
+      className={"bar" + setElmHigh(props) + setSectionHigh(props)}
       style={animation}
     ></animated.div>
   );

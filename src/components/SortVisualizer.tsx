@@ -66,6 +66,8 @@ function SortVisualizer({ steps, speed, stepAnimation, started, toggleStart }: S
           isMain={steps[currentStep].i1 === idx}
           isSecondary={steps[currentStep].i2 === idx}
           isTertiary={steps[currentStep].i3 === idx}
+          isSectionStart={steps[currentStep].sstart === idx}
+          isSectionEnd={steps[currentStep].send === idx}
         />
       ))}
     </div>

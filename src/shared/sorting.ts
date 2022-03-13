@@ -74,22 +74,18 @@ export function insertionSort(arr: number[]): History {
 export function quicksort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
 
-  function sort(a: number[], lo: number, hi: number, history: History) {
-    if (lo < 0 || lo >= hi) return;
-
-    // PARTITIONING
-    let pi: number;
+  function partition(a: number[], lo: number, hi: number): number {
+    let pi: number = Math.floor((lo + hi) * 0.5);
     while (true) {
-      const piValue = a[Math.floor((lo + hi) * 0.5)];
-      let i = lo;
-      let j = hi;
+      const piValue = a[pi];
+      let i = lo, j = hi;
       while (a[i] < piValue) {
         i++;
-        history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+        history.push({ type: "COMP", i1: i, i2: pi, arr: [...a] });
       }
       while (a[j] > piValue) {
         j--;
-        history.push({ type: "COMP", i1: i, i2: j, arr: [...a] });
+        history.push({ type: "COMP", i1: j, i2: pi, arr: [...a] });
       }
       if (i < j) {
         swap(i, j, a);
@@ -99,13 +95,18 @@ export function quicksort(arr: number[]): History {
         break;
       }
     }
+    return pi;
+  };
 
-    // RECURSION
-    sort(a, lo, pi - 1, history);
-    sort(a, pi + 1, hi, history);
+  // Recursive sort function
+  function sort(a: number[], lo: number, hi: number) {
+    if (lo < 0 || lo >= hi) return;
+    const pi = partition(a, lo, hi);
+    sort(a, lo, pi - 1);
+    sort(a, pi + 1, hi);
   }
 
-  sort(arr, 0, arr.length - 1, history);
+  sort(arr, 0, arr.length - 1);
   return history;
 }
 
@@ -114,7 +115,10 @@ export function quicksort(arr: number[]): History {
 export function mergeSort(arr: number[]): History {
   const history: History = [{ type: "INIT", arr: [...arr] }];
 
-  // Merge alg without copy array
+  // Merge alg without a copy array
+  // NOTE: this merge function is not the common merge-sort merge function because it
+  // doesn't use a copy array and it does in-place swapping instead.
+  // This choice was made in order to be able to visualize the merge in a comprehensible way.
   function merge(a: number[], left: number, center: number, right: number): void {
     // The array is fractioned like this: 0 ... | i ... m | j ... right | ... end
     // The sectors i...m and j...right are already ordered by recursion, so I just have to merge them
